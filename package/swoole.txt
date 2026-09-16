@@ -1,0 +1,69 @@
+apt-get update
+apt-get install -y libcurl4-openssl-dev pkg-config libc-ares-dev
+
+
+
+
+# 确认 PHP 7.4 编译环境已激活
+sudo update-alternatives --config php
+sudo update-alternatives --config phpize
+sudo update-alternatives --config php-config
+
+# 重新执行 PECL 安装（之前选过的选项会保留）
+sudo pecl -d php_suffix=7.4 install swoole-4.8.13
+
+# 先更新 PECL 频道
+sudo pecl channel-update pecl.php.net
+
+# 指定 PHP 8.0 安装（不指定版本号，默认就是 5.x）
+sudo pecl -d php_suffix=8.0 install swoole
+
+
+
+# 创建配置内容
+echo "extension=swoole.so" | sudo tee /etc/php/7.4/mods-available/swoole.ini
+
+# 链接到 CLI 和 FPM
+sudo ln -s /etc/php/7.4/mods-available/swoole.ini /etc/php/7.4/cli/conf.d/20-swoole.ini
+sudo ln -s /etc/php/7.4/mods-available/swoole.ini /etc/php/7.4/fpm/conf.d/20-swoole.ini
+
+
+# 链接到 CLI 和 FPM
+echo "extension=swoole.so" | sudo tee /etc/php/8.3/mods-available/swoole.ini
+# 链接到 CLI 和 FPM
+sudo ln -s /etc/php/8.3/mods-available/swoole.ini /etc/php/8.3/cli/conf.d/20-swoole.ini
+sudo ln -s /etc/php/8.3/mods-available/swoole.ini /etc/php/8.3/fpm/conf.d/20-swoole.ini
+
+
+# 重启 FPM
+sudo service php8.3-fpm restart
+
+# 创建配置内容
+echo "extension=swoole.so" | sudo tee /etc/php/7.4/mods-available/swoole.ini
+
+# 链接到 CLI 和 FPM（如果 Web 也需要）
+sudo ln -s /etc/php/7.4/mods-available/swoole.ini /etc/php/7.4/cli/conf.d/20-swoole.ini
+sudo ln -s /etc/php/7.4/mods-available/swoole.ini /etc/php/7.4/fpm/conf.d/20-swoole.ini
+
+# 重启 FPM
+sudo service php7.4-fpm restart
+
+
+# 先更新 PECL 频道（避免 SSL 下载失败）
+sudo pecl channel-update pecl.php.net
+
+# 安装（以 PHP 7.4 + Swoole 4.8.11 为例）
+sudo pecl -d php_suffix=7.4 install swoole-4.8.11
+
+
+sudo update-alternatives --config php
+sudo update-alternatives --config phpize
+sudo update-alternatives --config php-config
+# 依次选择 7.4 对应的编号
+
+
+# 先更新 PECL 频道
+sudo pecl channel-update pecl.php.net
+
+# 指定 PHP 8.0 安装（不指定版本号，默认就是 5.x）
+sudo pecl -d php_suffix=8.0 install swoole

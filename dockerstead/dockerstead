@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+COMPOSE=(docker compose --project-directory "$SCRIPT_DIR" -f "$SCRIPT_DIR/docker-compose.yaml")
+if [[ -f "$SCRIPT_DIR/.env" ]]; then COMPOSE+=(--env-file "$SCRIPT_DIR/.env"); fi
+
+command="${1:-help}"
+case "$command" in
+  up)      "${COMPOSE[@]}" up -d "${@:2}" ;;
+  down)    "${COMPOSE[@]}" down "${@:2}" ;;
+  build)   "${COMPOSE[@]}" build "${@:2}" ;;
+  restart) "${COMPOSE[@]}" down; "${COMPOSE[@]}" up -d ;;
+  ps|status) "${COMPOSE[@]}" ps ;;
+  logs)    if [[ -n "${2:-}" ]]; then "${COMPOSE[@]}" logs -f "$2"; else "${COMPOSE[@]}" logs -f; fi ;;
+  config)  "${COMPOSE[@]}" config ;;
+  shell)   service="${2:-php83}"; "${COMPOSE[@]}" exec "$service" sh ;;
+  composer) service="${2:-php83}"; if (( $# >= 2 )); then shift 2; else set --; fi; "${COMPOSE[@]}" exec "$service" composer "$@" ;;
+  mysql)   "${COMPOSE[@]}" exec mysql mysql -uhomestead -psecret homestead ;;
+  redis)   "${COMPOSE[@]}" exec redis redis-cli ;;
+  clean)   read -r -p "Remove DockerStead volumes? [y/N] " answer; [[ "$answer" == y || "$answer" == Y ]] && "${COMPOSE[@]}" down -v ;;
+  *)
+    cat <<'EOF'
+DockerStead commands: up [service], down, build, restart, ps, logs [service], config,
+shell [php74..php85|frankenphp82..frankenphp85], composer [service] [...], mysql, redis, clean
+EOF
+    ;;
+esac

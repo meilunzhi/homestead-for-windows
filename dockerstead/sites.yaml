@@ -1,0 +1,23 @@
+# DockerStead mirror of the active sites in ../Homestead.yaml.
+# `to` is kept as the container path so Nginx and PHP see the same document root.
+sites:
+  - { host: api.market.testing, root: /home/vagrant/code/api/api_bgrf_market/public, php: "8.3" }
+  - { host: api.hn-yjt.testing, root: /home/vagrant/code/api/ework_admin_3d5/public, php: "7.4" }
+  - { host: api.shop.testing, root: /home/vagrant/code/thinkapp/api/public, php: "7.4" }
+  - { host: api.gcfw-shop.testing, root: /home/vagrant/code/api/gcfw-bg/api/public, php: "7.4" }
+  - { host: api.gcfw-app.testing, root: /home/vagrant/code/api/gcfw-app/api/public, php: "7.4" }
+  - { host: api.gcsc-wxapp.testing, root: /home/vagrant/code/api/gcsc/jzsc_ework_wxapp_v1/public, php: "7.4" }
+  - { host: api.fast-admin.testing, root: /home/vagrant/code/api/fastadmin/public, php: "7.4" }
+  - { host: api.laravel-admin.testing, root: /home/vagrant/code/api/laravel-admin/public, php: "8.1" }
+  - { host: api.bgd-api.testing, root: /home/vagrant/code/api/yjtAutoApi/public, php: "7.4" }
+  - { host: api.yjt.testing, root: /home/vagrant/code/api/yjtAuto/public, php: "7.4" }
+  - { host: api.yjt-wxapp.testing, root: /home/vagrant/code/api/ework_worker_v7/public, php: "7.4" }
+  - { host: api.ework-worker.testing, root: /home/vagrant/code/api/ework_worker_v6/public, php: "7.4" }
+  - { host: api.ycs-operation.testing, root: /home/vagrant/code/api/Ycs-Operation/public, php: "7.4" }
+  - { host: api.bgd-wxapp.testing, root: /home/vagrant/code/api/bgd_wxapp/public, php: "7.4" }
+  - { host: api.zqt-worker.testing, root: /home/vagrant/code/api/zqt-worker-v6/public, php: "7.4" }
+  - { host: api.dorm.testing, root: /home/vagrant/code/api/dorm-api/public, php: "7.4" }
+  - { host: api.yjt-corp.testing, root: /home/vagrant/code/api/wxapp_v6.1/public, php: "8.3" }
+  - { host: api.bgrf-api.testing, root: /home/vagrant/code/api/bgrf-admin_v3/public, php: "7.4" }
+  - { host: api.ycs.testing, root: /home/vagrant/code/api/ycsAuto/public, php: "7.4" }
+

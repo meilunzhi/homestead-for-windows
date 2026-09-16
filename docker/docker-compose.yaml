@@ -1,0 +1,186 @@
+version: '3.8'
+
+# DockerStead - 本地开发环境
+# 使用方式: docker-compose up -d
+
+services:
+  # Nginx Web 服务器
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: dockerstead_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${APP_PATH}:/app:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - dockerstead
+    depends_on:
+      - php
+    restart: unless-stopped
+
+  # PHP-FPM
+  php:
+    image: php:8.5-fpm-alpine
+    container_name: dockerstead_php
+    volumes:
+      - ${APP_PATH}:/app
+    networks:
+      - dockerstead
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - DB_HOST=mysql
+      - REDIS_HOST=redis
+    restart: unless-stopped
+
+  # MySQL/MariaDB
+  mysql:
+    image: mysql:8.4
+    container_name: dockerstead_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=${DB_NAME:-homestead}
+      - MYSQL_USER=vagrant
+      - MYSQL_PASSWORD=vagrant
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # PostgreSQL
+  postgresql:
+    image: postgres:17-alpine
+    container_name: dockerstead_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_ROOT_PASSWORD=secret
+      - POSTGRES_DB=${DB_NAME:-homestead}
+      - POSTGRES_USER=vagrant
+      - POSTGRES_PASSWORD=vagrant
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: dockerstead_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Mailpit (Mailhog 替代)
+  mailpit:
+    image: axllent/mailpit
+    container_name: dockerstead_mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Minio (S3 兼容存储)
+  minio:
+    image: minio/minio
+    container_name: dockerstead_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: dockerstead_meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=masterKey
+    volumes:
+      - meilisearch_data:/meili_data
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Elasticsearch
+  elasticsearch:
+    image: elasticsearch:8.17.0
+    container_name: dockerstead_elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - dockerstead
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MongoDB
+  mongodb:
+    image: mongo:7
+    container_name: dockerstead_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_DATABASE=${DB_NAME:-homestead}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - dockerstead
+    restart: unless-stopped
+
+  # Adminer (数据库管理)
+  adminer:
+    image: adminer:latest
+    container_name: dockerstead_adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - dockerstead
+    depends_on:
+      - mysql
+      - postgresql
+      - mongodb
+    restart: unless-stopped
+
+networks:
+  dockerstead:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  postgres_data:
+  minio_data:
+  meilisearch_data:
+  elasticsearch_data:
+  mongodb_data:

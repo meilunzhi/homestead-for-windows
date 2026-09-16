@@ -1,0 +1,9 @@
+{
+    auto_https off
+}
+
+:80 {
+    root * {$FRANKENPHP_ROOT}
+    encode zstd gzip
+    php_server
+}

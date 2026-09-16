@@ -1,0 +1,88 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$root = dirname(__DIR__);
+$configPath = $argv[1] ?? $root.'/Homestead.yaml';
+$settings = Yaml::parseFile($configPath);
+$mkcert = $settings['mkcert'] ?? null;
+
+if (! is_array($mkcert) || empty($mkcert['certificate']) || empty($mkcert['key'])) {
+    fwrite(STDERR, "Homestead.yaml must define mkcert.certificate and mkcert.key.\n");
+    exit(1);
+}
+
+$domains = [];
+foreach ($settings['sites'] ?? [] as $site) {
+    if (! empty($site['map'])) {
+        $domains[] = (string) $site['map'];
+        if (($site['wildcard'] ?? null) === 'yes') {
+            $domains[] = '*.'.(string) $site['map'];
+        }
+    }
+}
+$domains = array_values(array_unique($domains));
+
+if ($domains === []) {
+    fwrite(STDERR, "Homestead.yaml does not contain any site domains.\n");
+    exit(1);
+}
+
+$resolvePath = static function (string $path) use ($root): string {
+    if (preg_match('/^(?:[A-Za-z]:[\\\\\/]|\/)/', $path) === 1) {
+        return $path;
+    }
+
+    return $root.'/'.ltrim($path, '/\\');
+};
+
+$certificate = $resolvePath((string) $mkcert['certificate']);
+$key = $resolvePath((string) $mkcert['key']);
+
+foreach (array_unique([dirname($certificate), dirname($key)]) as $directory) {
+    if (! is_dir($directory) && ! mkdir($directory, 0700, true) && ! is_dir($directory)) {
+        fwrite(STDERR, "Unable to create certificate directory: {$directory}\n");
+        exit(1);
+    }
+}
+
+$finder = new ExecutableFinder();
+$executable = getenv('MKCERT_BIN') ?: $finder->find('mkcert');
+
+if (! $executable && PHP_OS_FAMILY === 'Windows') {
+    $matches = glob((getenv('LOCALAPPDATA') ?: '').'/Microsoft/WinGet/Packages/FiloSottile.mkcert_*/mkcert.exe');
+    $executable = $matches[0] ?? null;
+}
+
+if (! $executable) {
+    fwrite(STDERR, "mkcert was not found. Install it with: winget install FiloSottile.mkcert\n");
+    exit(1);
+}
+
+$run = static function (array $command): void {
+    $process = new Process($command);
+    $process->setTimeout(null);
+    $process->run(static function (string $type, string $buffer): void {
+        fwrite($type === Process::ERR ? STDERR : STDOUT, $buffer);
+    });
+
+    if (! $process->isSuccessful()) {
+        exit($process->getExitCode() ?: 1);
+    }
+};
+
+$run([$executable, '-install']);
+$run(array_merge([
+    $executable,
+    '-cert-file', $certificate,
+    '-key-file', $key,
+], $domains));
+
+fwrite(STDOUT, sprintf("Created %s for %d domain(s).\n", $certificate, count($domains)));

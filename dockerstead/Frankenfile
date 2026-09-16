@@ -1,0 +1,22 @@
+# DockerStead FrankenPHP image. Compose builds this image for each supported
+# PHP_VERSION (8.2, 8.3, 8.4 and 8.5).
+ARG PHP_VERSION=8.5
+FROM dunglas/frankenphp:php${PHP_VERSION}-bookworm
+
+ARG PHP_VERSION
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends git unzip zip; \
+    install-php-extensions \
+        bcmath exif gd intl mbstring opcache pcntl pdo_mysql pdo_pgsql \
+        sockets xml zip pdo_sqlite redis; \
+    rm -rf /tmp/pear /var/lib/apt/lists/*
+
+COPY php/conf.d/99-dockerstead.ini /usr/local/etc/php/conf.d/99-dockerstead.ini
+COPY frankenphp/Caddyfile /etc/caddy/Caddyfile
+
+WORKDIR /home/vagrant/code

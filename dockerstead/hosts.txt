@@ -1,0 +1,21 @@
+127.0.0.1 localhost
+127.0.0.1 api.market.testing
+127.0.0.1 api.hn-yjt.testing
+127.0.0.1 api.shop.testing
+127.0.0.1 api.gcfw-shop.testing
+127.0.0.1 api.gcfw-app.testing
+127.0.0.1 api.gcsc-wxapp.testing
+127.0.0.1 api.fast-admin.testing
+127.0.0.1 api.laravel-admin.testing
+127.0.0.1 api.bgd-api.testing
+127.0.0.1 api.yjt.testing
+127.0.0.1 api.yjt-wxapp.testing
+127.0.0.1 api.ework-worker.testing
+127.0.0.1 api.ycs-operation.testing
+127.0.0.1 api.bgd-wxapp.testing
+127.0.0.1 api.zqt-worker.testing
+127.0.0.1 api.dorm.testing
+127.0.0.1 api.yjt-corp.testing
+127.0.0.1 api.bgrf-api.testing
+127.0.0.1 api.ycs.testing
+

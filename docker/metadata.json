@@ -1,0 +1,10 @@
+{
+    "name": "laravel/homestead",
+    "versions": [{
+        "version": "16.0.0",
+        "providers": [{
+            "name": "virtualbox",
+            "url": "file://D://Docker/Soft/homestead-vb-16.02.box"
+        }]
+    }]
+}

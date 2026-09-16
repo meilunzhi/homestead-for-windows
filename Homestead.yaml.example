@@ -1,0 +1,179 @@
+---
+ip: "192.168.10.10"
+memory: 2048
+cpus: 2
+provider: virtualbox #vmware_desktop  virtualbox
+# 增加局域网访问
+public_network: true
+# 网络配置
+#networks:
+#  - type: "public_network"
+#    ip: "192.168.180.200"
+#    bridge: "Tenda Wireless USB Adapter"
+#网络配置 局域网访问
+# networks:
+#   - type: "private_network"
+#     ip: "192.168.68.188"
+#     bridge: "Realtek Gaming 2.5GbE Family Controller"  # 这里改接口名
+
+version: 16.0.0
+# 箱子版本名称
+box: laravel/homestead
+backup: true
+#https
+ssl: true
+
+authorize: C:/Users/Meilunzhi/.ssh/id_rsa.pub
+
+keys:
+  - C:/Users/Meilunzhi/.ssh/id_rsa
+
+folders:
+  - map: D:/Code
+    to: /home/vagrant/code
+
+  - map: D:/Sites
+    to: /home/vagrant/go
+
+sites:
+  # Crmeb-商城系统 6.0.0 标准正式版本
+  - map: api.shop.testing
+    to: /home/vagrant/code/thinkapp/api/public
+    php: "7.4"
+    type: "crmeb"
+  # 工程服务-商城系统 - new version 6.0.0
+  - map: local-api.gcfw-shop.testing
+    to: /home/vagrant/code/gcfw-bg/api/public
+    php: "7.4"
+    type: "crmeb"
+  # 工程服务-商城系统 version 5.6.4
+  - map: local-api.gcfw-app.testing
+    to: /home/vagrant/code/gcfw-app/api/public
+    php: "7.4"
+    type: "crmeb"
+  # 工程市场-接口服务
+  - map: local-api.gcsc-wxapp.testing
+    to: /home/vagrant/code/gcsc/jzsc_ework_wxapp_v1/public
+    php: "7.4"
+    type: "laravel"
+  # local-api.fast-admin.testing
+  - map: local-api.fast-admin.testing
+    to: /home/vagrant/code/fastadmin/public
+    php: "7.4"
+    type: "fastadmin"
+  # api.laravel-vue.testing
+  - map: local-api.laravel-admin.testing
+    to: /home/vagrant/code/laravel-admin/public
+    php: "8.1"
+    type: "laravel"
+  # 百工得-人力资源-后台-接口
+  - map: local-api.bgd-api.testing
+    to: /home/vagrant/code/yjtAutoApi/public
+    php: "7.4"
+    type: "fastadmin"
+  # 易匠通
+  - map: local-www.yjt.testing
+    to: /home/vagrant/code/yjtAuto/public
+    php: "7.4"
+    type: "fastadmin"
+  # schedule: true
+  #   api 小程序易匠通接口
+  - map: local-api.yjt.testing
+    to: /home/vagrant/code/ework_worker_v7/public
+    php: "7.4"
+    type: "laravel"
+  # 易匠通工人端接口
+  - map: local-api.ework-worker.testing
+    to: /home/vagrant/code/ework_worker_v6/public
+    php: "7.4"
+    type: "laravel"
+  # schedule: true
+  #   业财税劳务运营后台
+  - map: local-api.ycs-operation.testing
+    to: /home/vagrant/code/operations/public
+    php: "7.4"
+    type: "laravel"
+  # 百工人服-接口
+  - map: local-api.bgd-wxapp.testing
+    to: /home/vagrant/code/bgd_wxapp/public
+    php: "7.4"
+    type: "laravel"
+  # 职圈通-工人端接口
+  - map: local-www.zqt-worker.testing
+    to: /home/vagrant/code/zqt-worker-v6/public
+    php: "7.4"
+    type: "laravel"
+  # 公寓管理系统-api
+  - map: local-api.apartment.testing
+    to: /home/vagrant/code/apartment-rent-api/public
+    php: "7.4"
+    type: "laravel"
+  # 易匠通企业端-api
+  - map: local-api.yjt-wxapp.testing
+    to: /home/vagrant/code/wxapp_v6.1/public
+    php: "8.3"
+    type: "laravel"
+  # 百工人服-系统后台-接口
+  - map: local-api.bgrf-api.testing
+    to: /home/vagrant/code/bgrf-admin_v3/public
+    php: "7.4"
+    type: "laravel"
+  # 业财税劳务运营后台-接口
+  - map: local-www.ycs.testing
+    to: /home/vagrant/code/ycsAuto/public
+    php: "7.4"
+    type: "fastadmin"
+# end
+databases:
+  - homestead
+
+features:
+  - ohmyzsh: true
+  - webdriver: false
+  - openresty: true
+    # - elasticsearch:
+    # version: 7
+#  - blackfire:
+#    server_id: "server_id"
+#    server_token: "server_value"
+#    client_id: "client_id"
+#    client_token: "client_value"
+#  - cassandra: true
+#  - chronograf: true
+#  - couchdb: true
+#  - crystal: true
+#  - dragonflydb: true
+#  - elasticsearch:
+#    version: 7.9.0
+#  - eventstore: true
+#    version: 21.2.0
+#  - flyway: true
+#  - gearman: true
+#  - golang: true
+#  - grafana: true
+#  - influxdb: true
+#  - logstash: true
+#  - mariadb: true
+#  - meilisearch: true
+#  - minio: true
+#  - mongodb: true
+#  - neo4j: true
+#  - ohmyzsh: true
+#  - openresty: true
+#  - pm2: true
+#  - python: true
+#  - r-base: true
+#  - rabbitmq: true
+#  - rustc: true
+#  - rvm: true
+#  - solr: true
+#  - timescaledb: true
+#  - trader: true
+#  - webdriver: true
+
+#ports:
+#     - send: 7777
+#       to: 777
+#       protocol: udp
+#    -   mongodb: false
+#

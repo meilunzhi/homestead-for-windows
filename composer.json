@@ -1,0 +1,35 @@
+{
+    "name": "svpernova09/homestead",
+    "description": "A fork of laravel/homestead.",
+    "require": {
+        "php": "^8.3 || <8.4",
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/process": "^6.0 || ^7.0",
+        "symfony/yaml": "^6.0 || ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "dms/phpunit-arraysubset-asserts": "^0.2.1",
+        "phpstan/phpstan": "^1.10"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joe Ferguson",
+            "email": "joe@joeferguson.me"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Svpernova\\Homestead\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/homestead"
+    ]
+}
