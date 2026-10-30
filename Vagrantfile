@@ -35,6 +35,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     Homestead.configure(config, settings)
 
+    config.vm.boot_timeout = settings.fetch('boot_timeout', 300)
+
     # Run post-mount script if it exists
     config.trigger.after :up do |trigger|
       trigger.name = "Running post-mount tasks"
